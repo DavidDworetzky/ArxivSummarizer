@@ -65,7 +65,7 @@ class TextSummarizerGPT4(TextSummarizer):
     
         # Extract the embedding from the API response
         embedding = response.choices[0].text.strip()
-        print(embedding)
+        self.logger.info(embedding)
         return embedding
 
 

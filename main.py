@@ -45,7 +45,7 @@ def ingest_articles(params: IngestionRequest):
     for url in params.article_urls:
         article_model = summarizer.crawl_article(url)
         summary = summarizer.summarize(article_model.text)
-        embedding = summarizer.generate_embedding(article_model.text)
+        embedding = summarizer.generate_embedding(summary)
         article_model.summary = summary
         article_model.embedding = embedding
         Session.commit()
