@@ -9,6 +9,11 @@ from fastapi import FastAPI, Depends, HTTPException
 from dotenv import load_dotenv
 import os
 from app.models.database.database import Session
+from app.models.database.article import Article
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
 load_dotenv()
 openai_key = os.getenv("OPENAI_TOKEN")
@@ -35,6 +40,7 @@ def ingest_articles(params: IngestionRequest):
     """
     Ingest articles from arxiv
     """
+    summaries = []
     summarizer = TextSummarizerGPT4(openai_key)
     for url in params.article_urls:
         article_model = summarizer.crawl_article(url)
@@ -43,6 +49,8 @@ def ingest_articles(params: IngestionRequest):
         article_model.summary = summary
         article_model.embedding = embedding
         Session.commit()
+        summaries.append(summary)
+    return summaries
 
 
 #article endpoint with optional query parameter of number of articles
@@ -51,5 +59,5 @@ def article(article_count: int = 1):
     """
     Gets a number of articles from the database
     """
-    return article.Article.query.limit(article_count).all()
+    return Session.query(Article).limit(article_count).all()
     
