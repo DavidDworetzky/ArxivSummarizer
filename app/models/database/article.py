@@ -14,3 +14,4 @@ class Article(Base):
     date = Column(DateTime)
     summary = Column(String)
     text = Column(String)
+    embedding = Column(String)

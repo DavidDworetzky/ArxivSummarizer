@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from typing import Array
+from typing import Any, List
+from pydantic import BaseModel
 
-@dataclass
-class IngestionRequest:
-    article_urls: Array[str]
+class IngestionRequest(BaseModel):
+    article_urls: List[str]

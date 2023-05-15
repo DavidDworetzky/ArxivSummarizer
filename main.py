@@ -3,7 +3,7 @@ import sys
 from typing import Optional
 from app.models.database import article
 from app.models.ingestion_request import IngestionRequest
-from app.pipelines.text_summarizer_gpt4 import TextSummarizerGPT4
+from pipelines.text_summarizer_gpt4 import TextSummarizerGPT4
 import logging
 from fastapi import FastAPI, Depends, HTTPException
 from dotenv import load_dotenv

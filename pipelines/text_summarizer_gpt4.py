@@ -40,11 +40,7 @@ class TextSummarizerGPT4(TextSummarizer):
         :param text: text to generate embedding for
         :return: embedding of the text
         """
-        
-        #call the openai api to generate an embedding for the text
-        #create the prompt
-        prompt = SUMMARIZER_PROMPT + "\n\n" + text + "\n\n"
-            # Call the OpenAI API to generate an embedding for the input text
+        # Call the OpenAI API to generate an embedding for the input text
         response = openai.Completion.create(
             engine="text-embedding-ada-002",
             prompt=text,
