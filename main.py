@@ -31,7 +31,7 @@ def version():
     return {"version": api_version}
 
 @app.post("/ingest_articles")
-def ingest_articles(params: IngestionRequest, openai_key: Optional[str] = Depends(openai_key)):
+def ingest_articles(params: IngestionRequest):
     """
     Ingest articles from arxiv
     """

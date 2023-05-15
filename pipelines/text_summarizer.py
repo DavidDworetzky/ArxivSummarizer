@@ -5,6 +5,7 @@ import requests
 from lxml import etree
 from app.models.database import article
 from app.models.database.database import Session
+from datetime import datetime
 
 class TextSummarizer(ABC):
     """
@@ -45,19 +46,27 @@ class TextSummarizer(ABC):
         parser = etree.HTMLParser()
         tree = etree.fromstring(text, parser)
         title_xpath = '//title/text()'
-        title = tree.xpath(title_xpath)
+        title = tree.xpath(title_xpath)[0]
         author_xpath = '//meta[@name="citation_author"]/@content'
-        author = tree.xpath(author_xpath)
+        author = tree.xpath(author_xpath)[0]
         date_xpath = '//meta[@name="citation_date"]/@content'
-        date = tree.xpath(date_xpath)
+        date_list = tree.xpath(date_xpath)
+        if date_list:
+            date = date_list[0]
+            date_value = datetime.strptime(date, '%Y/%m/%d')
+        else:
+            #default to today's date if the date is absent.
+            date_value = datetime.now()
+        #parse date as a datetime object
+        date = datetime.strptime(date, '%Y/%m/%d')
         summary_xpath = '//blockquote[@class="abstract mathjax"]/text()'
-        summary = tree.xpath(summary_xpath)
+        summary = tree.xpath(summary_xpath)[0]
         text_xpath = '//div[@class="full-text"]/text()'
-        article_text = tree.xpath(text_xpath)
+        article_text = tree.xpath(text_xpath)[0]
 
         #now, create an article model and persist it to the database
         #create an article model
-        article_model = article.Article(title=title, url=url, author=author, date=date, summary=summary, text=article_text)
+        article_model = article.Article(title=title, url=url, author=author, date=date_value, summary=summary, text=article_text)
         #persist the article model to the database
         Session.add(article_model)
         Session.commit()

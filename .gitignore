@@ -3,3 +3,5 @@ outputs/*.json
 *.pyc
 .DS_Store
 /.env
+
+local_database.db
