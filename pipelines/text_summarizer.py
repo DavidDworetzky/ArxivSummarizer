@@ -6,6 +6,7 @@ from lxml import etree
 from app.models.database import article
 from app.models.database.database import Session
 from datetime import datetime
+from functools import reduce
 
 class TextSummarizer(ABC):
     """
@@ -60,13 +61,15 @@ class TextSummarizer(ABC):
         #parse date as a datetime object
         date = datetime.strptime(date, '%Y/%m/%d')
         summary_xpath = '//blockquote[@class="abstract mathjax"]/text()'
-        summary = tree.xpath(summary_xpath)[0]
+        summary = tree.xpath(summary_xpath)
+        if summary:
+            summary_content = reduce(lambda x, y: x + y, summary)
         text_xpath = '//div[@class="full-text"]/text()'
         article_text = tree.xpath(text_xpath)[0]
 
         #now, create an article model and persist it to the database
         #create an article model
-        article_model = article.Article(title=title, url=url, author=author, date=date_value, summary=summary, text=article_text)
+        article_model = article.Article(title=title, url=url, author=author, date=date_value, text=summary_content)
         #persist the article model to the database
         Session.add(article_model)
         Session.commit()

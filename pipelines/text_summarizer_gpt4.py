@@ -24,7 +24,7 @@ class TextSummarizerGPT4(TextSummarizer):
         prompt = SUMMARIZER_PROMPT + "\n\n" + text + "\n\n"
         #create the parameters
         params = {
-            "max_tokens": 100,
+            "max_tokens": 200,
             "temperature": 0.7,
             "top_p": 1,
             "frequency_penalty": 0.5,
@@ -52,21 +52,16 @@ class TextSummarizerGPT4(TextSummarizer):
         :return: embedding of the text
         """
         # Call the OpenAI API to generate an embedding for the input text
-        response = openai.Completion.create(
-            engine="text-embedding-ada-002",
-            prompt=text,
-            n=1,
-            max_tokens=1,
-            temperature=0.7,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
+        response = openai.Embedding.create(
+            model="text-embedding-ada-002",
+            input=text,
         )
     
         # Extract the embedding from the API response
-        embedding = response.choices[0].text.strip()
+        self.logger.info(response)
+        embedding = response.data[0].embedding
         self.logger.info(embedding)
-        return embedding
+        return str(embedding)
 
 
 
